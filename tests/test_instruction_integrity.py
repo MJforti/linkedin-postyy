@@ -126,6 +126,38 @@ class PlatformLimits(unittest.TestCase):
                                  f"offers up to {high} images, LinkedIn accepts {ceiling}")
 
 
+class ReadLayerPromises(unittest.TestCase):
+    """A skill may only promise a read the library can actually perform.
+
+    Issue #55 was this class of bug from the user's side: the profile
+    optimizer listed a profile URL as input, and nothing in the read layer
+    can fetch a profile. The agent then either asks for a paste anyway or
+    invents the profile it was told to score.
+    """
+
+    CALLS = re.compile(r"lib\.([a-z_][a-z0-9_]*)\(")
+
+    def test_every_lib_helper_a_document_calls_is_exported(self):
+        import lib
+
+        exported = set(lib.__all__)
+        missing = []
+        for path in [ROOT / "SKILL.md", *markdown(ROOT / "skills"), *markdown(ROOT / "references")]:
+            for name in set(self.CALLS.findall(path.read_text())):
+                if name not in exported:
+                    missing.append(f"{path.relative_to(ROOT)}: lib.{name}()")
+        self.assertEqual(missing, [], "documents calling helpers lib does not export:\n  " + "\n  ".join(missing))
+
+    def test_the_profile_optimizer_asks_for_a_paste_not_a_url(self):
+        text = (ROOT / "skills" / "linkedin-profile-optimizer" / "SKILL.md").read_text()
+        intake = text.split("## Input", 1)[1].split("## Output", 1)[0]
+
+        self.assertIn("paste", intake.lower(),
+                      "the Input section must tell the user to paste the profile")
+        self.assertRegex(intake, r"cannot be fetched|no profile actor",
+                         "the Input section must say a profile URL cannot be read")
+
+
 class SkillConventions(unittest.TestCase):
     """The rules CLAUDE.md calls mandatory, checked rather than trusted."""
 
