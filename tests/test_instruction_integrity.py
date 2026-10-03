@@ -126,6 +126,49 @@ class PlatformLimits(unittest.TestCase):
                                  f"offers up to {high} images, LinkedIn accepts {ceiling}")
 
 
+class UserModelWiring(unittest.TestCase):
+    """The Story Bank is only worth filling if the skills that promise to use it do.
+
+    The interviewer's Related section told users a filled bank turns a week of
+    planning into picking from existing material, while the planner read neither
+    the bank nor the voice profile. A promise in one document and nothing in the
+    other is the same defect class as a skill asking for input it cannot read.
+    """
+
+    SPINE = ("Moment", "Number", "Correction", "Opposition", "Ask")
+
+    def consumers(self):
+        """Skills the interviewer names as drawing on the bank."""
+        related = (ROOT / "skills" / "linkedin-interviewer" / "SKILL.md").read_text()
+        related = related.split("## Related skills", 1)[1]
+        return set(re.findall(r"`(linkedin-[a-z-]+)`", related))
+
+    def test_the_interviewer_names_consumers_that_exist(self):
+        names = {s.name for s in SKILLS}
+        unknown = sorted(self.consumers() - names)
+        self.assertEqual(unknown, [], f"interviewer points at skills that do not exist: {unknown}")
+
+    def test_every_skill_the_interviewer_sends_material_to_reads_the_bank(self):
+        deaf = []
+        for name in sorted(self.consumers()):
+            text = (ROOT / "skills" / name / "SKILL.md").read_text()
+            # the humanizer is named for the other half of the model, the voice profile
+            if "--mode profile" in text and "story-bank" not in text:
+                continue
+            if "story-bank.md" not in text:
+                deaf.append(name)
+        self.assertEqual(deaf, [], "named as bank consumers but never read it:\n  " + "\n  ".join(deaf))
+
+    def test_the_spine_has_the_same_five_lines_on_both_sides(self):
+        interviewer = (ROOT / "skills" / "linkedin-interviewer" / "SKILL.md").read_text()
+        writer = (ROOT / "skills" / "linkedin-post-writer" / "SKILL.md").read_text()
+        for line in self.SPINE:
+            self.assertIn(f"**{line}**", interviewer,
+                          f"the interviewer no longer defines the {line} line")
+            self.assertIn(line, writer,
+                          f"the post writer does not know what to do with the {line} line")
+
+
 class ReadLayerPromises(unittest.TestCase):
     """A skill may only promise a read the library can actually perform.
 
