@@ -114,9 +114,23 @@ One command that works across Claude Code, Codex, Cursor, and any other agent th
 npx skills add sergebulaev/linkedin-skills
 ```
 
-> **Found this useful? [Star the repo](https://github.com/sergebulaev/linkedin-skills).** Curated Claude Code and Codex directories rank and gate by star count, so a star is what makes these skills findable for the next person. It is the only thing we ask. No signup, no email.
+### Web Application (Next.js & Vercel)
+
+The repository includes a production-ready Next.js web application (**LinkedIn OS**) that wraps the bundle's 12 skills, 20 hook formulas, 10 founder angles, and 4-pass Humanizer V3 into a modern content operating system:
+
+```bash
+# Run locally
+npm install
+npm run dev
+# Open http://localhost:3000
+```
+
+Deployable directly to **Vercel** with one click. Configure optional environment variables (`PUBLORA_API_KEY`, `LINKEDIN_PLATFORM_ID`, `APIFY_TOKEN`, `PIXFARO_TOKEN`) in your Vercel Project Settings.
+
+---
 
 ## What you can do
+
 
 Once installed, just ask Claude Code or Codex for help with LinkedIn. The right skill activates automatically.
 
