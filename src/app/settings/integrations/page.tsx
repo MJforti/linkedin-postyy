@@ -116,6 +116,49 @@ export default function IntegrationsPage() {
           </div>
         </div>
 
+        {/* Grok (xAI) LLM Engine */}
+        <div className="p-5 rounded-xl border border-slate-800 bg-[#0f1523] space-y-3">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-sm text-white">Grok (xAI API)</span>
+              <span className="text-[10px] font-mono text-slate-400">(Inference Engine)</span>
+            </div>
+            <span className={`text-[10px] font-mono font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1.5 ${
+              status?.grokConfigured
+                ? "bg-emerald-950/60 text-emerald-300 border border-emerald-800"
+                : "bg-slate-800 text-slate-400 border border-slate-700"
+            }`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${status?.grokConfigured ? "bg-emerald-400" : "bg-slate-500"}`} />
+              <span>{status?.grokConfigured ? "Connected (grok-2-latest Active)" : "Optional (Built-in Heuristic Generator Active)"}</span>
+            </span>
+          </div>
+
+          <p className="text-xs text-slate-400 leading-relaxed">
+            Powers high-conviction post generation, contrarian angles, and humanizing using xAI's Grok API. Compatible with standard xAI keys.
+          </p>
+
+          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800 text-xs font-mono space-y-1.5 text-slate-300">
+            <div className="flex items-center justify-between">
+              <span>GROK_API_KEY (or XAI_API_KEY)</span>
+              <span className={status?.grokConfigured ? "text-emerald-400" : "text-slate-500"}>
+                {status?.grokConfigured ? "✓ Set in environment" : "Optional / Unset"}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between pt-1 text-xs">
+            <a
+              href="https://console.x.ai"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1 text-[#0A66C2] hover:underline"
+            >
+              <span>Get Grok Key from xAI Console (console.x.ai)</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
+        </div>
+
         {/* Apify Read Layer */}
         <div className="p-5 rounded-xl border border-slate-800 bg-[#0f1523] space-y-3">
           <div className="flex items-center justify-between pb-2 border-b border-slate-800">
