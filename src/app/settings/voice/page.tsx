@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from "react";
 import {
-  Sliders,
-  CheckCircle2,
+  Mic,
   Bookmark,
-  ShieldCheck,
-  AlertCircle,
+  CheckCircle2,
   Plus,
   Trash2,
+  Sliders,
+  ShieldAlert,
 } from "lucide-react";
 import { VoiceProfile } from "@/lib/types";
 import { getStoredVoiceProfile, saveVoiceProfile } from "@/lib/storage";
@@ -63,151 +63,172 @@ export default function VoiceSettingsPage() {
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto animate-in fade-in duration-200">
-      <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <Sliders className="w-5 h-5 text-[#0A66C2]" />
-            <h1 className="text-xl font-bold text-white tracking-tight">Voice & Brand Profile</h1>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-[11px] font-mono font-medium text-[#175CD3] bg-[#EFF8FF] border border-[#D1E9FF] px-2.5 py-0.5 rounded-full uppercase">
+              SETTINGS // YOUR VOICE
+            </span>
+            <span className="text-xs font-mono text-[#667085]">CALIBRATION</span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Define your unique practitioner voice, blacklisted vocabulary, and formatting cadence.
+          <h1 className="text-2xl font-bold tracking-tight text-[#101828]">
+            Executive Voice Calibration
+          </h1>
+          <p className="text-xs text-[#475467] mt-0.5">
+            Configure your tone, preferred practitioner vocabulary, and blacklisted clichés to govern draft generation.
           </p>
         </div>
 
         <button
           onClick={handleSave}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium text-white bg-[#0A66C2] hover:bg-[#084e96] rounded-md shadow-sm transition-colors"
+          className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#004EEB] hover:bg-[#0040C1] rounded-lg shadow-sm transition-colors self-start sm:self-auto"
         >
           <Bookmark className="w-3.5 h-3.5" />
-          <span>{saveStatus ? "Saved!" : "Save Voice Profile"}</span>
+          <span>{saveStatus ? "Saved!" : "Save Profile"}</span>
         </button>
       </div>
 
-      <div className="p-6 rounded-xl border border-slate-800 bg-[#0f1523] space-y-6">
-        {/* Profile Name & Tagline */}
+      <div className="p-6 rounded-xl bg-white border border-[#EAECF0] shadow-xs space-y-6">
+        {/* Name & Tagline */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Profile Identifier</label>
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-[#344054]">Voice Persona Name</label>
             <input
               type="text"
               value={profile.name}
               onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-              className="w-full px-3 py-1.5 text-xs rounded-md bg-slate-950 border border-slate-800 text-slate-200 focus:outline-none focus:border-[#0A66C2]"
+              className="w-full px-3 py-2 text-xs rounded-lg bg-white border border-[#D0D5DD] text-[#101828] focus:outline-none focus:border-[#004EEB]"
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Tagline / Mission</label>
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-[#344054]">Core Tagline / Stance</label>
             <input
               type="text"
-              value={profile.tagline}
+              value={profile.tagline || ""}
               onChange={(e) => setProfile({ ...profile, tagline: e.target.value })}
-              className="w-full px-3 py-1.5 text-xs rounded-md bg-slate-950 border border-slate-800 text-slate-200 focus:outline-none focus:border-[#0A66C2]"
+              placeholder="e.g. Building high-signal software without billable bloat"
+              className="w-full px-3 py-2 text-xs rounded-lg bg-white border border-[#D0D5DD] text-[#101828] focus:outline-none focus:border-[#004EEB]"
             />
           </div>
         </div>
 
-        {/* Style & Tone Description */}
-        <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-1.5">Writing Style & Cadence</label>
-          <textarea
-            rows={3}
-            value={profile.styleDescription}
-            onChange={(e) => setProfile({ ...profile, styleDescription: e.target.value })}
-            className="w-full p-2.5 text-xs rounded-lg bg-slate-950 border border-slate-800 text-slate-200 focus:outline-none focus:border-[#0A66C2] resize-none"
+        {/* Tone Descriptors */}
+        <div className="space-y-1">
+          <label className="text-xs font-semibold text-[#344054]">
+            Tone Descriptors (Comma separated)
+          </label>
+          <input
+            type="text"
+            value={profile.tone || "Authoritative, candid, data-grounded, contrarian"}
+            onChange={(e) =>
+              setProfile({
+                ...profile,
+                tone: e.target.value,
+              })
+            }
+            className="w-full px-3 py-2 text-xs rounded-lg bg-white border border-[#D0D5DD] text-[#101828] focus:outline-none focus:border-[#004EEB]"
           />
         </div>
 
-        {/* Words to Avoid (Blacklist) */}
-        <div className="space-y-2">
-          <label className="block text-xs font-semibold text-slate-300">
-            Blacklisted Words (Always Scrubbed by Humanizer)
-          </label>
-          <div className="flex flex-wrap items-center gap-1.5 p-3 rounded-lg bg-slate-950 border border-slate-800 min-h-[44px]">
-            {profile.avoidWords.map((word) => (
-              <span
-                key={word}
-                className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs bg-rose-950/60 text-rose-300 border border-rose-900/60 font-mono"
-              >
-                <span>{word}</span>
-                <button
-                  onClick={() => removeAvoidWord(word)}
-                  className="hover:text-white"
-                  title="Remove word"
-                >
-                  <Trash2 className="w-2.5 h-2.5" />
-                </button>
-              </span>
-            ))}
+        {/* Words Avoided (Blacklist) */}
+        <div className="space-y-2 pt-2 border-t border-[#F2F4F7]">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-semibold text-[#344054]">
+              Blacklisted Words &amp; Corporate Clichés (Always Stripped)
+            </label>
+            <span className="text-[11px] font-mono text-[#B54708]">
+              {profile.avoidWords.length} banned phrases
+            </span>
           </div>
 
-          <div className="flex items-center gap-2 pt-1">
+          <div className="flex items-center gap-2">
             <input
               type="text"
               value={newAvoidWord}
               onChange={(e) => setNewAvoidWord(e.target.value)}
-              placeholder="Add word to avoid (e.g. robust, synergy)..."
-              onKeyDown={(e) => e.key === "Enter" && addAvoidWord()}
-              className="px-3 py-1.5 text-xs rounded-md bg-slate-950 border border-slate-800 text-slate-200 focus:outline-none focus:border-[#0A66C2] flex-1"
+              onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addAvoidWord())}
+              placeholder="Add word to blacklist (e.g. delve, game changer, thrilled)..."
+              className="flex-1 px-3 py-1.5 text-xs rounded-lg bg-[#FAFBFD] border border-[#EAECF0] text-[#101828] focus:outline-none focus:border-[#004EEB]"
             />
             <button
               onClick={addAvoidWord}
-              className="px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 rounded transition-colors"
+              className="px-3 py-1.5 text-xs font-semibold text-[#344054] hover:bg-[#F2F4F7] bg-white border border-[#D0D5DD] rounded-lg transition-colors"
             >
-              Add Word
+              Add
             </button>
           </div>
-        </div>
 
-        {/* Preferred Words */}
-        <div className="space-y-2">
-          <label className="block text-xs font-semibold text-slate-300">
-            Preferred Practitioner Vocabulary
-          </label>
-          <div className="flex flex-wrap items-center gap-1.5 p-3 rounded-lg bg-slate-950 border border-slate-800 min-h-[44px]">
-            {profile.preferredWords.map((word) => (
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {profile.avoidWords.map((word) => (
               <span
                 key={word}
-                className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs bg-emerald-950/60 text-emerald-300 border border-emerald-900/60 font-mono"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-full bg-[#FEF3F2] text-[#B42318] border border-[#FECDCA]"
               >
                 <span>{word}</span>
-                <button
-                  onClick={() => removePreferredWord(word)}
-                  className="hover:text-white"
-                  title="Remove word"
-                >
-                  <Trash2 className="w-2.5 h-2.5" />
+                <button onClick={() => removeAvoidWord(word)} className="hover:text-red-800">
+                  ×
                 </button>
               </span>
             ))}
           </div>
+        </div>
 
-          <div className="flex items-center gap-2 pt-1">
+        {/* Words Preferred */}
+        <div className="space-y-2 pt-2 border-t border-[#F2F4F7]">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-semibold text-[#344054]">
+              Preferred Vocabulary &amp; Operator Terms
+            </label>
+            <span className="text-[11px] font-mono text-[#027A48]">
+              {profile.preferredWords.length} terms
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
             <input
               type="text"
               value={newPreferredWord}
               onChange={(e) => setNewPreferredWord(e.target.value)}
-              placeholder="Add preferred term (e.g. receipts, throughput)..."
-              onKeyDown={(e) => e.key === "Enter" && addPreferredWord()}
-              className="px-3 py-1.5 text-xs rounded-md bg-slate-950 border border-slate-800 text-slate-200 focus:outline-none focus:border-[#0A66C2] flex-1"
+              onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addPreferredWord())}
+              placeholder="Add preferred word (e.g. leverage, pipeline, latency)..."
+              className="flex-1 px-3 py-1.5 text-xs rounded-lg bg-[#FAFBFD] border border-[#EAECF0] text-[#101828] focus:outline-none focus:border-[#004EEB]"
             />
             <button
               onClick={addPreferredWord}
-              className="px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 rounded transition-colors"
+              className="px-3 py-1.5 text-xs font-semibold text-[#344054] hover:bg-[#F2F4F7] bg-white border border-[#D0D5DD] rounded-lg transition-colors"
             >
-              Add Word
+              Add
             </button>
+          </div>
+
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {profile.preferredWords.map((word) => (
+              <span
+                key={word}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-full bg-[#ECFDF3] text-[#027A48] border border-[#A6F4C5]"
+              >
+                <span>{word}</span>
+                <button onClick={() => removePreferredWord(word)} className="hover:text-emerald-800">
+                  ×
+                </button>
+              </span>
+            ))}
           </div>
         </div>
 
-        {/* CTA Preferences */}
-        <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-1.5">CTA & Closing Preference</label>
-          <input
-            type="text"
-            value={profile.ctaPreferences}
-            onChange={(e) => setProfile({ ...profile, ctaPreferences: e.target.value })}
-            className="w-full px-3 py-1.5 text-xs rounded-md bg-slate-950 border border-slate-800 text-slate-200 focus:outline-none focus:border-[#0A66C2]"
+        {/* Writing Sample */}
+        <div className="space-y-1 pt-2 border-t border-[#F2F4F7]">
+          <label className="text-xs font-semibold text-[#344054]">
+            Writing Sample (Golden Standard)
+          </label>
+          <textarea
+            rows={5}
+            value={profile.examples?.[0] || ""}
+            onChange={(e) => setProfile({ ...profile, examples: [e.target.value] })}
+            placeholder="Paste 1–2 paragraphs of your best writing to tune the AI synthesizer..."
+            className="w-full p-3 text-xs font-sans leading-relaxed rounded-lg bg-[#FAFBFD] border border-[#EAECF0] text-[#101828] placeholder-[#98A2B3] focus:outline-none focus:border-[#004EEB] resize-y"
           />
         </div>
       </div>

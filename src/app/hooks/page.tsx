@@ -7,9 +7,8 @@ import {
   Copy,
   CheckCircle2,
   ArrowRight,
-  TrendingUp,
-  Bookmark,
-  ShieldAlert,
+  SquarePen,
+  Target,
 } from "lucide-react";
 import { HOOK_FORMULAS, FOUNDER_ANGLES } from "@/lib/hook-formulas";
 import { EngagementGoal } from "@/lib/types";
@@ -32,31 +31,41 @@ export default function HookLibraryPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <Zap className="w-5 h-5 text-amber-400" />
-            <h1 className="text-xl font-bold text-white tracking-tight">Hook & Formula Library</h1>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-[11px] font-mono font-medium text-[#175CD3] bg-[#EFF8FF] border border-[#D1E9FF] px-2.5 py-0.5 rounded-full uppercase">
+              TOOLS // HOOK GENERATOR
+            </span>
+            <span className="text-xs font-mono text-[#667085]">2026 HEURISTICS</span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            20 battle-tested 2026 hook formulas (F1–F20) and 10 Founder Edition angles (A1–A10).
+          <h1 className="text-2xl font-bold tracking-tight text-[#101828]">
+            Hook &amp; Formula Engine
+          </h1>
+          <p className="text-xs text-[#475467] mt-0.5">
+            20 battle-tested canonical formulas (F1–F20) and 10 Founder Edition narrative angles (A1–A10).
           </p>
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex items-center p-1 rounded-lg bg-slate-900 border border-slate-800 self-start sm:self-auto">
+        <div className="flex items-center p-1 rounded-lg bg-[#F2F4F7] self-start sm:self-auto">
           <button
             onClick={() => setTab("formulas")}
-            className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-              tab === "formulas" ? "bg-slate-800 text-white shadow-sm" : "text-slate-400 hover:text-white"
+            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+              tab === "formulas"
+                ? "bg-white text-[#101828] shadow-xs"
+                : "text-[#667085] hover:text-[#101828]"
             }`}
           >
             20 Hook Formulas
           </button>
           <button
             onClick={() => setTab("founder")}
-            className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-              tab === "founder" ? "bg-slate-800 text-white shadow-sm" : "text-slate-400 hover:text-white"
+            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+              tab === "founder"
+                ? "bg-white text-[#101828] shadow-xs"
+                : "text-[#667085] hover:text-[#101828]"
             }`}
           >
             10 Founder Angles
@@ -65,18 +74,18 @@ export default function HookLibraryPage() {
       </div>
 
       {tab === "formulas" && (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Goal Filter */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-medium text-slate-400 mr-2">Filter by Goal:</span>
+          <div className="flex flex-wrap items-center gap-2 pb-1">
+            <span className="text-xs font-semibold text-[#344054] mr-2">Filter Goal:</span>
             {(["all", "comments", "reposts", "saves", "likes"] as const).map((g) => (
               <button
                 key={g}
                 onClick={() => setGoalFilter(g)}
-                className={`px-3 py-1 text-xs font-medium rounded-md capitalize transition-colors ${
+                className={`px-3 py-1 text-xs font-semibold rounded-lg capitalize transition-colors ${
                   goalFilter === g
-                    ? "bg-[#0A66C2] text-white"
-                    : "bg-slate-900 text-slate-400 hover:text-white border border-slate-800"
+                    ? "bg-[#EFF8FF] text-[#175CD3] border border-[#D1E9FF]"
+                    : "bg-white text-[#667085] hover:text-[#101828] border border-[#EAECF0]"
                 }`}
               >
                 {g}
@@ -89,53 +98,55 @@ export default function HookLibraryPage() {
             {filteredFormulas.map((formula) => (
               <div
                 key={formula.code}
-                className="p-5 rounded-xl border border-slate-800 bg-[#0f1523] space-y-3 flex flex-col justify-between hover:border-slate-700 transition-colors"
+                className="p-5 rounded-xl bg-white border border-[#EAECF0] hover:border-[#D0D5DD] shadow-xs space-y-3 flex flex-col justify-between transition-all group"
               >
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-amber-400 border border-slate-700/60">
+                      <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-[#EFF8FF] text-[#175CD3] border border-[#D1E9FF]">
                         {formula.code}
                       </span>
-                      <h3 className="text-sm font-semibold text-white">{formula.name}</h3>
+                      <h2 className="text-sm font-bold text-[#101828]">
+                        {formula.name}
+                      </h2>
                     </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#0A66C2]/20 text-[#0A66C2]">
-                      Goal: {formula.bestFor}
+                    <span className="text-[10px] font-mono text-[#027A48] bg-[#ECFDF3] px-2 py-0.5 rounded-full font-semibold uppercase">
+                      {formula.bestFor}
                     </span>
                   </div>
 
-                  <p className="text-xs text-slate-400 leading-relaxed">
+                  <p className="text-xs text-[#475467] leading-relaxed">
                     {formula.whyItWorks}
                   </p>
 
-                  <div className="p-3 rounded-lg bg-slate-950 border border-slate-800/80 font-mono text-[11px] text-slate-300 leading-relaxed whitespace-pre-wrap max-h-48 overflow-y-auto">
-                    {formula.skeleton}
-                  </div>
-
-                  <div className="p-2 rounded bg-slate-900/60 border border-slate-800/80 text-[11px] text-slate-400 flex items-start gap-1.5">
-                    <ShieldAlert className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-                    <span><strong>2026 Audit Note:</strong> {formula.reachNote2026}</span>
+                  <div className="p-3 rounded-lg bg-[#FAFBFD] border border-[#EAECF0] space-y-1">
+                    <div className="text-[10px] font-mono font-bold uppercase text-[#667085]">
+                      Pattern Blueprint
+                    </div>
+                    <div className="text-xs font-mono text-[#101828] leading-snug">
+                      {formula.skeleton}
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-slate-800 text-xs">
+                <div className="flex items-center justify-between pt-2 border-t border-[#F2F4F7]">
                   <button
                     onClick={() => handleCopySkeleton(formula.code, formula.skeleton)}
-                    className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors"
+                    className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#344054] hover:bg-[#F2F4F7] bg-white border border-[#D0D5DD] rounded-lg transition-colors"
                   >
                     {copiedCode === formula.code ? (
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#027A48]" />
                     ) : (
-                      <Copy className="w-3.5 h-3.5" />
+                      <Copy className="w-3.5 h-3.5 text-[#667085]" />
                     )}
-                    <span>{copiedCode === formula.code ? "Copied" : "Copy Skeleton"}</span>
+                    <span>{copiedCode === formula.code ? "Copied" : "Copy Template"}</span>
                   </button>
 
                   <Link
                     href={`/create?formula=${formula.code}`}
-                    className="flex items-center gap-1 text-xs font-medium text-[#0A66C2] hover:underline"
+                    className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold text-white bg-[#004EEB] hover:bg-[#0040C1] rounded-lg shadow-xs transition-colors"
                   >
-                    <span>Use in Writer</span>
+                    <span>Write Post</span>
                     <ArrowRight className="w-3 h-3" />
                   </Link>
                 </div>
@@ -150,39 +161,38 @@ export default function HookLibraryPage() {
           {FOUNDER_ANGLES.map((angle) => (
             <div
               key={angle.code}
-              className="p-5 rounded-xl border border-slate-800 bg-[#0f1523] space-y-3 flex flex-col justify-between"
+              className="p-5 rounded-xl bg-white border border-[#EAECF0] hover:border-[#D0D5DD] shadow-xs space-y-3 flex flex-col justify-between transition-all"
             >
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-sky-400 border border-slate-700/60">
-                      {angle.code}
-                    </span>
-                    <h3 className="text-sm font-semibold text-white">{angle.name}</h3>
-                  </div>
-                  <span className="text-[10px] font-mono text-slate-400">
-                    {angle.territory}
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-[#FEF0C7] text-[#B54708] border border-[#FEDF89]">
+                    {angle.code}
                   </span>
+                  <h2 className="text-sm font-bold text-[#101828]">
+                    {angle.name}
+                  </h2>
                 </div>
 
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <p className="text-xs text-[#475467] leading-relaxed">
                   {angle.description}
                 </p>
 
-                <div className="p-3 rounded-lg bg-slate-950 border border-slate-800/80 font-mono text-[11px] text-slate-300 leading-relaxed">
-                  "{angle.template}"
+                <div className="p-3 rounded-lg bg-[#FAFBFD] border border-[#EAECF0] space-y-1">
+                  <div className="text-[10px] font-mono font-bold uppercase text-[#667085]">
+                    Example Opener
+                  </div>
+                  <div className="text-xs text-[#101828] italic">
+                    &quot;{angle.template}&quot;
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-3 border-t border-slate-800 text-xs">
-                <span className="text-[11px] text-slate-400">
-                  Maps to Formula: <strong className="text-white">{angle.pinnedFormula || "Flexible"}</strong>
-                </span>
+              <div className="pt-2 border-t border-[#F2F4F7] flex justify-end">
                 <Link
-                  href={`/create?formula=${angle.pinnedFormula || "F17"}`}
-                  className="flex items-center gap-1 text-xs font-medium text-[#0A66C2] hover:underline"
+                  href={`/create?formula=F17`}
+                  className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold text-[#004EEB] hover:bg-[#EFF8FF] rounded-lg transition-colors"
                 >
-                  <span>Use in Writer</span>
+                  <span>Apply in Writer</span>
                   <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>

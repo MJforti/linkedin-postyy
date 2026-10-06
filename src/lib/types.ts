@@ -1,12 +1,12 @@
-export type EngagementGoal = "comments" | "reposts" | "likes" | "saves";
+export type EngagementGoal = "comments" | "reposts" | "likes" | "saves" | "reach" | "leads";
 
-export type PostTone = "direct" | "conversational" | "analytical" | "story-driven" | "opinionated" | "founder";
+export type PostTone = "direct" | "conversational" | "analytical" | "story-driven" | "opinionated" | "founder" | "contrarian" | "storytelling" | "educational" | "technical";
 
 export type PostFormat = "text" | "carousel" | "video" | "image" | "poll";
 
 export type ReactionType = "LIKE" | "PRAISE" | "EMPATHY" | "INTEREST" | "APPRECIATION" | "ENTERTAINMENT";
 
-export type PostStatus = "draft" | "scheduled" | "published" | "failed";
+export type PostStatus = "draft" | "in_review" | "ready" | "scheduled" | "published" | "failed";
 
 export interface HookFormula {
   code: string; // e.g. "F1", "F17"
@@ -51,7 +51,7 @@ export interface PostDraft {
   founderAngleCode?: string;
   goal: EngagementGoal;
   tone: PostTone;
-  targetAudience: string;
+  targetAudience?: string;
   charCount: number;
   status: PostStatus;
   scheduledTime?: string; // ISO

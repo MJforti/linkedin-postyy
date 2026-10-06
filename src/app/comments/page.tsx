@@ -5,14 +5,12 @@ import {
   MessageSquare,
   Copy,
   CheckCircle2,
-  Send,
-  Sparkles,
-  Share2,
-  ExternalLink,
   RefreshCw,
   AlertCircle,
+  Sparkles,
+  Share2,
 } from "lucide-react";
-import { CommentDraft, ReactionType } from "@/lib/types";
+import { CommentDraft } from "@/lib/types";
 import { ApprovalPublishModal } from "@/components/ApprovalPublishModal";
 
 export default function CommentDrafterPage() {
@@ -24,7 +22,6 @@ export default function CommentDrafterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-
   const [activePublishText, setActivePublishText] = useState<string | null>(null);
 
   const handleDraft = async () => {
@@ -65,21 +62,35 @@ export default function CommentDrafterPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
-      <div className="pb-4 border-b border-slate-800">
-        <div className="flex items-center gap-2">
-          <MessageSquare className="w-5 h-5 text-emerald-400" />
-          <h1 className="text-xl font-bold text-white tracking-tight">LinkedIn Comment & Reply Drafter</h1>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-[11px] font-mono font-medium text-[#175CD3] bg-[#EFF8FF] border border-[#D1E9FF] px-2.5 py-0.5 rounded-full uppercase">
+              TOOLS // COMMENT WRITER
+            </span>
+            <span className="text-xs font-mono text-[#667085]">HIGH-SIGNAL REPLIES</span>
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-[#101828]">
+            Comment &amp; Reply Drafter
+          </h1>
+          <p className="text-xs text-[#475467] mt-0.5">
+            Generate insightful, conversation-sparking comments (200–350 chars) that get pinned and build executive network authority.
+          </p>
         </div>
-        <p className="text-xs text-slate-400 mt-1">
-          Generate conversation-sparking comments (200–350 chars) and reshare commentary that authors actually reply to.
-        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* INPUTS (5 cols) */}
-        <div className="lg:col-span-5 p-5 rounded-xl border border-slate-800 bg-[#0f1523] space-y-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+        {/* Left: Input Card (5 cols) */}
+        <div className="lg:col-span-5 p-5 rounded-xl bg-white border border-[#EAECF0] shadow-xs space-y-4">
+          <div className="pb-3 border-b border-[#EAECF0]">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-[#101828]">
+              Target Post Details
+            </h2>
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-[#344054]">
               LinkedIn Post URL (Optional)
             </label>
             <input
@@ -87,113 +98,105 @@ export default function CommentDrafterPage() {
               value={postUrl}
               onChange={(e) => setPostUrl(e.target.value)}
               placeholder="https://www.linkedin.com/posts/..."
-              className="w-full px-3 py-1.5 text-xs rounded-md bg-slate-950 border border-slate-800 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-[#0A66C2]"
+              className="w-full px-3 py-2 text-xs rounded-lg bg-white border border-[#D0D5DD] text-[#101828] placeholder-[#98A2B3] focus:outline-none focus:border-[#004EEB]"
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-              Post Snippet or Context <span className="text-rose-400">*</span>
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-[#344054]">
+              Post Snippet or Topic <span className="text-red-500">*</span>
             </label>
             <textarea
-              rows={5}
+              rows={6}
               value={postText}
               onChange={(e) => setPostText(e.target.value)}
-              placeholder="Paste the target post's text here (especially the ending question or claim)..."
-              className="w-full p-2.5 text-xs rounded-lg bg-slate-950 border border-slate-800 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-[#0A66C2] leading-relaxed resize-none"
+              placeholder="Paste the post you want to reply to..."
+              className="w-full p-3 text-xs font-sans leading-relaxed rounded-lg bg-[#FAFBFD] border border-[#EAECF0] text-[#101828] placeholder-[#98A2B3] focus:outline-none focus:border-[#004EEB] focus:bg-white resize-y"
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-              Your Perspective / Operating Angle (Optional)
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-[#344054]">
+              Your Angle or Experience (Optional)
             </label>
-            <textarea
-              rows={2}
+            <input
+              type="text"
               value={userPerspective}
               onChange={(e) => setUserPerspective(e.target.value)}
-              placeholder="e.g. In our workflow we cut meeting syncs by 40% with automated changelogs..."
-              className="w-full p-2.5 text-xs rounded-lg bg-slate-950 border border-slate-800 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-[#0A66C2] leading-relaxed resize-none"
+              placeholder="e.g. As an engineering VP who lived through this pivot..."
+              className="w-full px-3 py-2 text-xs rounded-lg bg-white border border-[#D0D5DD] text-[#101828] placeholder-[#98A2B3] focus:outline-none focus:border-[#004EEB]"
             />
           </div>
 
           {error && (
-            <div className="p-3 rounded-lg bg-rose-950/40 border border-rose-900/60 text-xs text-rose-300 flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-              <span>{error}</span>
+            <div className="p-3 rounded-lg bg-[#FEF3F2] border border-[#FECDCA] text-xs text-[#B42318]">
+              {error}
             </div>
           )}
 
           <button
             onClick={handleDraft}
             disabled={isLoading || (!postUrl.trim() && !postText.trim())}
-            className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-500 rounded-md shadow-sm transition-colors disabled:opacity-40"
+            className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-semibold text-white bg-[#004EEB] hover:bg-[#0040C1] rounded-lg shadow-sm transition-colors disabled:opacity-40"
           >
             {isLoading ? (
               <>
                 <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                <span>Drafting Context-Aware Comments...</span>
+                <span>Crafting High-Signal Comments...</span>
               </>
             ) : (
               <>
                 <MessageSquare className="w-3.5 h-3.5" />
-                <span>Generate Comment Variants</span>
+                <span>Draft 3 Comment Options</span>
               </>
             )}
           </button>
         </div>
 
-        {/* OUTPUTS (7 cols) */}
+        {/* Right: Comment Options (7 cols) */}
         <div className="lg:col-span-7 space-y-4">
           {comments.length > 0 ? (
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-white">Generated Comment Variants</span>
-                <span className="text-[11px] text-slate-400">Target 200–350 chars</span>
-              </div>
-
               {comments.map((comment) => (
                 <div
                   key={comment.id}
-                  className="p-4 rounded-xl border border-slate-800 bg-[#0f1523] space-y-3 hover:border-slate-700/80 transition-all"
+                  className="p-5 rounded-xl bg-white border border-[#EAECF0] shadow-xs space-y-3"
                 >
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-white">Variant #{comment.variant}</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700/60">
-                        {comment.templateName}
-                      </span>
-                    </div>
-
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#0A66C2]/20 text-[#0A66C2]">
-                      Reaction: {comment.reaction}
+                  <div className="flex items-center justify-between pb-2 border-b border-[#F2F4F7]">
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#EFF8FF] text-[#175CD3] border border-[#D1E9FF] uppercase">
+                      {comment.templateName || "Comment Angle"}
+                    </span>
+                    <span className="text-[11px] font-mono text-[#667085]">
+                      {comment.charCount} chars
                     </span>
                   </div>
 
-                  <p className="text-xs text-slate-200 leading-relaxed font-sans whitespace-pre-wrap p-3 rounded-lg bg-slate-950 border border-slate-800/80">
+                  <p className="text-xs text-[#101828] leading-relaxed font-sans">
                     {comment.content}
                   </p>
 
-                  <div className="flex items-center justify-between pt-1 text-[11px] text-slate-400">
-                    <span className="italic">{comment.whyThisFits}</span>
+                  <div className="flex items-center justify-between pt-2 border-t border-[#F2F4F7]">
+                    <span className="text-[11px] text-[#475467]">
+                      {comment.reaction === "LIKE" ? "👍 Like" : "💡 Insightful"} recommended
+                    </span>
+
                     <div className="flex items-center gap-2">
-                      <span className="font-mono">{comment.charCount} chars</span>
                       <button
                         onClick={() => handleCopy(comment.id, comment.content)}
-                        className="p-1.5 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
-                        title="Copy comment"
+                        className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#344054] hover:bg-[#F2F4F7] bg-white border border-[#D0D5DD] rounded-lg transition-colors"
                       >
                         {copiedId === comment.id ? (
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                          <CheckCircle2 className="w-3 h-3 text-[#027A48]" />
                         ) : (
-                          <Copy className="w-3.5 h-3.5" />
+                          <Copy className="w-3 h-3 text-[#667085]" />
                         )}
+                        <span>{copiedId === comment.id ? "Copied" : "Copy"}</span>
                       </button>
+
                       <button
                         onClick={() => setActivePublishText(comment.content)}
-                        className="px-2.5 py-1 text-xs font-medium text-white bg-[#0A66C2] hover:bg-[#084e96] rounded transition-colors flex items-center gap-1"
+                        className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-white bg-[#004EEB] hover:bg-[#0040C1] rounded-lg shadow-xs transition-colors"
                       >
-                        <Send className="w-3 h-3" />
                         <span>Publish</span>
                       </button>
                     </div>
@@ -201,49 +204,51 @@ export default function CommentDrafterPage() {
                 </div>
               ))}
 
-              {/* Reshare commentary section */}
               {reshareCommentary && (
-                <div className="p-4 rounded-xl border border-slate-800 bg-[#0f1523] space-y-2">
-                  <div className="flex items-center justify-between text-xs font-semibold text-slate-300">
-                    <span className="flex items-center gap-1.5">
-                      <Share2 className="w-3.5 h-3.5 text-[#0A66C2]" />
-                      <span>Reshare / Repost Commentary</span>
+                <div className="p-5 rounded-xl bg-white border border-[#EAECF0] shadow-xs space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b border-[#F2F4F7]">
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#ECFDF3] text-[#027A48] border border-[#A6F4C5] uppercase">
+                      RESHARE COMMENTARY
                     </span>
-                    <button
-                      onClick={() => handleCopy("reshare", reshareCommentary)}
-                      className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
-                    >
-                      {copiedId === "reshare" ? (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                      ) : (
-                        <Copy className="w-3.5 h-3.5" />
-                      )}
-                    </button>
                   </div>
-                  <p className="text-xs text-slate-300 font-mono p-2.5 rounded bg-slate-950 border border-slate-800 leading-relaxed">
+                  <p className="text-xs text-[#101828] leading-relaxed">
                     {reshareCommentary}
                   </p>
+                  <div className="flex justify-end pt-2">
+                    <button
+                      onClick={() => handleCopy("reshare", reshareCommentary)}
+                      className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#344054] hover:bg-[#F2F4F7] bg-white border border-[#D0D5DD] rounded-lg transition-colors"
+                    >
+                      <Copy className="w-3 h-3 text-[#667085]" />
+                      <span>Copy Commentary</span>
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
           ) : (
-            <div className="p-16 text-center rounded-xl border border-dashed border-slate-800 bg-[#0f1523]/40 text-slate-500 space-y-2">
-              <MessageSquare className="w-6 h-6 text-slate-600 mx-auto" />
-              <p className="text-xs">
-                Enter the LinkedIn post text or URL on the left to draft high-engagement comments.
+            <div className="p-12 rounded-xl bg-white border border-[#EAECF0] shadow-xs text-center space-y-3">
+              <div className="w-10 h-10 rounded-full bg-[#F2F4F7] text-[#667085] flex items-center justify-center mx-auto">
+                <MessageSquare className="w-5 h-5" />
+              </div>
+              <h3 className="text-sm font-bold text-[#101828]">
+                Ready to Draft Replies
+              </h3>
+              <p className="text-xs text-[#667085] max-w-sm mx-auto leading-relaxed">
+                Provide a post snippet on the left to generate 3 tailored comment strategies: contrarian observation, value-add operator experience, and provocative follow-up.
               </p>
             </div>
           )}
         </div>
       </div>
 
-      {activePublishText && (
-        <ApprovalPublishModal
-          isOpen={Boolean(activePublishText)}
-          onClose={() => setActivePublishText(null)}
-          draftText={activePublishText}
-        />
-      )}
+      <ApprovalPublishModal
+        isOpen={Boolean(activePublishText)}
+        onClose={() => setActivePublishText(null)}
+        draftText={activePublishText || ""}
+        postUrl={postUrl || undefined}
+        defaultKind="comment"
+      />
     </div>
   );
 }

@@ -4,13 +4,15 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   FileText,
+  Search,
   Trash2,
   Copy,
   CheckCircle2,
-  ExternalLink,
   Plus,
+  ArrowRight,
   Send,
-  Calendar,
+  MoreVertical,
+  Link as LinkIcon,
 } from "lucide-react";
 import { PostDraft } from "@/lib/types";
 import { getStoredDrafts, deleteDraft } from "@/lib/storage";
@@ -18,7 +20,8 @@ import { ApprovalPublishModal } from "@/components/ApprovalPublishModal";
 
 export default function DraftsPage() {
   const [drafts, setDrafts] = useState<PostDraft[]>([]);
-  const [filter, setFilter] = useState<"all" | "draft" | "scheduled" | "published">("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filter, setFilter] = useState<string>("all");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [publishingDraft, setPublishingDraft] = useState<PostDraft | null>(null);
 
@@ -40,155 +43,179 @@ export default function DraftsPage() {
   };
 
   const filteredDrafts = drafts.filter((d) => {
-    if (filter === "all") return true;
-    return d.status === filter;
+    if (filter !== "all" && d.status !== filter) return false;
+    if (
+      searchQuery.trim() &&
+      !d.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      !d.content.toLowerCase().includes(searchQuery.toLowerCase())
+    ) {
+      return false;
+    }
+    return true;
   });
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-white tracking-tight">Content Drafts & Library</h1>
-          <p className="text-xs text-slate-400">
-            Manage your working drafts, scheduled content, and historical posts.
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-[11px] font-mono font-medium text-[#175CD3] bg-[#EFF8FF] border border-[#D1E9FF] px-2.5 py-0.5 rounded-full uppercase">
+              WORKSPACE // DRAFTS ARCHIVE
+            </span>
+            <span className="text-xs font-mono text-[#667085]">
+              {drafts.length} total entries
+            </span>
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-[#101828]">
+            Editorial Archive
+          </h1>
+          <p className="text-xs text-[#475467] mt-0.5">
+            Search, manage, and refine your active pipeline, reviewed posts, and scheduled dispatches.
           </p>
         </div>
 
         <Link
           href="/create"
-          className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium text-white bg-[#0A66C2] hover:bg-[#084e96] rounded-md shadow-sm transition-colors self-start sm:self-auto"
+          className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#004EEB] hover:bg-[#0040C1] rounded-lg shadow-sm transition-colors self-start sm:self-auto"
         >
           <Plus className="w-3.5 h-3.5" />
-          <span>Create New Post</span>
+          <span>Create Post</span>
         </Link>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-800 pb-2">
-        {(["all", "draft", "scheduled", "published"] as const).map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setFilter(tab)}
-            className={`px-3 py-1.5 text-xs font-medium rounded-md capitalize transition-colors ${
-              filter === tab
-                ? "bg-slate-800 text-white font-semibold"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
-            }`}
-          >
-            {tab} {tab === "all" ? `(${drafts.length})` : `(${drafts.filter((d) => d.status === tab).length})`}
-          </button>
-        ))}
+      {/* Search & Filter Bar */}
+      <div className="p-4 rounded-xl bg-white border border-[#EAECF0] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="relative flex-1 max-w-md">
+          <Search className="w-4 h-4 text-[#667085] absolute left-3 top-2.5" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search drafts by title, hook, or body text..."
+            className="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg bg-[#FAFBFD] border border-[#EAECF0] text-[#101828] placeholder-[#98A2B3] focus:outline-none focus:border-[#004EEB] focus:bg-white"
+          />
+        </div>
+
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+          {["all", "draft", "in_review", "ready", "published"].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setFilter(tab)}
+              className={`px-3 py-1 text-xs font-semibold rounded-lg capitalize transition-colors ${
+                filter === tab
+                  ? "bg-[#EFF8FF] text-[#175CD3]"
+                  : "text-[#667085] hover:text-[#101828] hover:bg-[#F2F4F7]"
+              }`}
+            >
+              {tab.replace("_", " ")}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Drafts List */}
-      {filteredDrafts.length === 0 ? (
-        <div className="p-12 text-center rounded-xl border border-dashed border-slate-800 bg-[#0f1523]/50 space-y-3">
-          <FileText className="w-8 h-8 text-slate-600 mx-auto" />
-          <h2 className="text-sm font-semibold text-slate-300">No {filter} drafts found</h2>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Start a fresh post using our 2026 hook formulas or port existing ideas into the editor.
-          </p>
-          <Link
-            href="/create"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-[#0A66C2] rounded-md"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>Create Draft</span>
-          </Link>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {filteredDrafts.map((draft) => (
+      {/* Editorial Archive List */}
+      <div className="space-y-3">
+        {filteredDrafts.length === 0 ? (
+          <div className="p-12 text-center rounded-xl bg-white border border-[#EAECF0] shadow-xs space-y-3">
+            <FileText className="w-8 h-8 text-[#98A2B3] mx-auto" />
+            <h3 className="text-sm font-bold text-[#101828]">
+              No matching drafts found
+            </h3>
+            <p className="text-xs text-[#667085] max-w-sm mx-auto">
+              Drafts generated in the Post Writer or Humanizer will automatically appear in this archive.
+            </p>
+          </div>
+        ) : (
+          filteredDrafts.map((draft) => (
             <div
               key={draft.id}
-              className="p-5 rounded-xl border border-slate-800 bg-[#0f1523] hover:border-slate-700/80 transition-all flex flex-col sm:flex-row justify-between gap-4"
+              className="p-5 rounded-xl bg-white border border-[#EAECF0] hover:border-[#D0D5DD] shadow-xs transition-all space-y-3 group"
             >
-              <div className="space-y-2 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-sm font-semibold text-white">{draft.title}</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
+                      draft.status === "published"
+                        ? "bg-[#ECFDF3] text-[#027A48] border border-[#A6F4C5]"
+                        : draft.status === "in_review"
+                        ? "bg-[#FEF0C7] text-[#B54708] border border-[#FEDF89]"
+                        : draft.status === "ready"
+                        ? "bg-[#ECFDF3] text-[#027A48] border border-[#A6F4C5]"
+                        : "bg-[#F2F4F7] text-[#344054] border border-[#EAECF0]"
+                    }`}
+                  >
+                    {draft.status?.replace("_", " ") || "DRAFT"}
+                  </span>
                   {draft.formulaCode && (
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700/60">
-                      {draft.formulaCode}
+                    <span className="text-[11px] font-mono text-[#175CD3] bg-[#EFF8FF] px-2 py-0.5 rounded">
+                      [{draft.formulaCode}]
                     </span>
                   )}
-                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded capitalize ${
-                    draft.status === "published"
-                      ? "bg-emerald-950/60 text-emerald-300 border border-emerald-800"
-                      : draft.status === "scheduled"
-                      ? "bg-blue-950/60 text-blue-300 border border-blue-800"
-                      : "bg-slate-800 text-slate-400"
-                  }`}>
-                    {draft.status}
+                  <span className="text-xs text-[#667085]">
+                    Updated {new Date(draft.updatedAt).toLocaleDateString()}
                   </span>
                 </div>
 
-                <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed font-sans whitespace-pre-wrap">
-                  {draft.content}
-                </p>
-
-                <div className="flex items-center gap-4 text-[11px] text-slate-500 font-mono pt-1">
-                  <span>{draft.charCount} characters</span>
-                  <span>Goal: {draft.goal}</span>
-                  <span>Updated: {new Date(draft.updatedAt).toLocaleDateString()}</span>
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 shrink-0 border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-800">
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleCopy(draft)}
-                    title="Copy post content"
-                    className="p-2 rounded text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                    className="p-1.5 text-[#667085] hover:text-[#101828] hover:bg-[#F2F4F7] rounded-lg transition-colors"
+                    title="Copy text"
                   >
                     {copiedId === draft.id ? (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      <CheckCircle2 className="w-4 h-4 text-[#027A48]" />
                     ) : (
                       <Copy className="w-4 h-4" />
                     )}
                   </button>
 
-                  <Link
-                    href={`/create?draftId=${draft.id}`}
-                    title="Edit in Writer"
-                    className="p-2 rounded text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                  </Link>
-
                   <button
                     onClick={() => handleDelete(draft.id)}
+                    className="p-1.5 text-[#667085] hover:text-[#B42318] hover:bg-[#FEF3F2] rounded-lg transition-colors"
                     title="Delete draft"
-                    className="p-2 rounded text-slate-400 hover:text-rose-400 hover:bg-rose-950/30 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
-                </div>
 
-                <button
-                  onClick={() => setPublishingDraft(draft)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-[#0A66C2] hover:bg-[#084e96] rounded transition-colors"
-                >
-                  <Send className="w-3 h-3" />
-                  <span>Publish Gate</span>
-                </button>
+                  <Link
+                    href={`/create?draftId=${draft.id}`}
+                    className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold text-[#004EEB] hover:bg-[#EFF8FF] rounded-lg transition-colors"
+                  >
+                    <span>Open in Writer</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </Link>
+                </div>
+              </div>
+
+              <Link href={`/create?draftId=${draft.id}`}>
+                <h2 className="text-sm font-bold text-[#101828] group-hover:text-[#004EEB] transition-colors">
+                  {draft.title}
+                </h2>
+                <p className="text-xs text-[#475467] line-clamp-2 mt-1 leading-relaxed">
+                  {draft.content}
+                </p>
+              </Link>
+
+              <div className="flex items-center gap-4 pt-2 border-t border-[#F2F4F7] text-[11px] font-mono text-[#667085]">
+                <span>≡ {draft.charCount || draft.content.length} characters</span>
+                <span>⏱ {Math.max(1, Math.round((draft.charCount || 1000) / 600))} min read</span>
+                {draft.topic && (
+                  <span className="truncate max-w-xs font-sans text-[#475467]">
+                    Topic: {draft.topic}
+                  </span>
+                )}
               </div>
             </div>
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </div>
 
-      {publishingDraft && (
-        <ApprovalPublishModal
-          isOpen={Boolean(publishingDraft)}
-          onClose={() => setPublishingDraft(null)}
-          draftText={publishingDraft.content}
-          onPublished={() => {
-            setDrafts(getStoredDrafts());
-            setPublishingDraft(null);
-          }}
-        />
-      )}
+      <ApprovalPublishModal
+        isOpen={Boolean(publishingDraft)}
+        onClose={() => setPublishingDraft(null)}
+        draftText={publishingDraft?.content || ""}
+      />
     </div>
   );
 }
