@@ -105,7 +105,7 @@ Currently, you only have the Vietnam exchange post. Add two more cards:
 ### E. Background Banner
 
 Upload the newly generated tech-first banner:
-- File: `logs/profile_banner_visual_#2.jpg`
+- File: `logs/profile_optimizer/images/profile_banner_visual_#2.jpg`
 - Headline: `AI ENGINEERING & BRAND SYSTEMS`
 - Subtitle: `Building Autonomous Software & High-Impact Media Pipelines`
 - Badges: `AI & LLM Systems` • `Full-Stack Software` • `Creative Strategy`

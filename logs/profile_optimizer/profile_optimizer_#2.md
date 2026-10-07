@@ -4,7 +4,7 @@
 - **Primary Positioning**: AI Systems, Autonomous Workflows & Software Engineering
 - **Secondary Positioning**: Creative Direction, Brand Partnerships & Media Ops
 - **Profile URL**: https://www.linkedin.com/in/mjf0rti/
-- **Associated Banner**: `logs/profile_banner_visual_#2.jpg`
+- **Associated Banner**: `logs/profile_optimizer/images/profile_banner_visual_#2.jpg`
 
 ---
 

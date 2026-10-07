@@ -2,7 +2,7 @@
 
 - **Date**: 06-10-2026
 - **Update**: #2 (Humanized - STRICT Tier Scrub)
-- **Associated Media**: `logs/ai_vs_traditional_agencies_visual_#1.jpg`
+- **Associated Media**: `logs/ai_vs_traditional_agencies/images/ai_vs_traditional_agencies_visual_#1.jpg`
 
 ---
 

@@ -4,7 +4,7 @@
 - **Primary Tech Specialization**: Cloud Computing & AI Application Development
 - **Secondary Non-Tech Specialization**: Brand Partnerships, Alliances & Creative Direction
 - **Profile URL**: https://www.linkedin.com/in/mjf0rti/
-- **Associated Banner**: `logs/profile_banner_visual_#3.jpg`
+- **Associated Banner**: `logs/profile_optimizer/images/profile_banner_visual_#3.jpg`
 
 ---
 
