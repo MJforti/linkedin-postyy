@@ -4,16 +4,16 @@
 \usepackage{latexsym}
 \usepackage[empty]{fullpage}
 \usepackage{titlesec}
-\usepackage{marvosym}
-\usepackage[usenames,dvipsnames]{color}
-\usepackage{verbatim}
 \usepackage{enumitem}
 \usepackage[hidelinks]{hyperref}
 \usepackage{fancyhdr}
 \usepackage[english]{babel}
 \usepackage{tabularx}
-\usepackage{fontawesome5}
-\input{glyphtounicode}
+
+\ifdefined\pdfgentounicode
+  \input{glyphtounicode}
+  \pdfgentounicode=1
+\fi
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -33,7 +33,6 @@
 \raggedright
 \setlength{\tabcolsep}{0in}
 
-\pdfgentounicode=1
 
 \begin{document}
 
@@ -83,7 +82,7 @@ Thank you for your time and consideration. I would welcome the opportunity to di
 Sincerely, \\[10pt]
 \textbf{Manthan Jain} \\
 \small
-+91-6000074846 $|$ workformj40@gmail.com \\
-\href{https://www.linkedin.com/in/mjf0rti}{linkedin.com/in/mjf0rti} $|$ \href{https://github.com/MJforti}{github.com/MJforti}
+workformj40@gmail.com, +91-6000074846 \\
+\href{https://www.linkedin.com/in/mjf0rti}{linkedin.com/in/mjf0rti}, \href{https://github.com/MJforti}{github.com/MJforti}
 
 \end{document}
